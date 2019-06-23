@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 using System.Drawing;
@@ -66,7 +67,7 @@ namespace Render3D
                     break;
                 case "view":
                     Console.WriteLine("Initializing viewer");
-                    Viewer view = new Viewer(r.Draw().bitmap);
+                    Viewer view = new Viewer(r);
                     view.View();
                     break;
                 case "ezinit":
@@ -89,6 +90,17 @@ namespace Render3D
                     bG.DrawImage(r.Draw().bitmap, 0, 0);
                     bG.Flush();
                     blackBack.Save("render.png", System.Drawing.Imaging.ImageFormat.Png);
+                    break;
+                case "setm obj test":
+                    Console.WriteLine("Populating render mesh from hard-coded test OBJ");
+                    r.SetVertices(Importer.LoadVerticesFromObj(@"antler.obj"));
+                    Console.WriteLine("Building edge list from vertices & OBJ data");
+                    r.SetEdges(Importer.BuildObjEdgesFromVertices(@"antler.obj", r.GetVertices()));
+                    break;
+                case "setm clear":
+                    Console.WriteLine("Clearing mesh");
+                    r.SetVertices(new List<Vertex>());
+                    r.SetEdges(new List<Edge>());
                     break;
             }
         }

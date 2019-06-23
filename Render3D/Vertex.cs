@@ -6,12 +6,12 @@ namespace Render3D
     public class Vertex
     {
 
-        public int x;
-        public int y;
-        public int z;
+        public float x;
+        public float y;
+        public float z;
         public Color c;
 
-        public Vertex(int x, int y, int z, Color c = new Color())
+        public Vertex(float x, float y, float z, Color c = new Color())
         {
             this.x = x;
             this.y = y;

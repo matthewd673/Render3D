@@ -14,12 +14,17 @@ namespace Render3D
         private int mX;
         private int mY;
 
+        int w;
+        int h;
+
         RenderWindow parent;
 
         Camera cam;
 
         public Renderer(int width, int height, RenderWindow parent)
         {
+            w = width;
+            h = height;
             dBmp = new DirectBitmap(width, height);
             this.parent = parent;
             cam = parent.c;
@@ -35,8 +40,25 @@ namespace Render3D
             edges.Add(new Edge(vertices[vId1], vertices[vId2]));
         }
 
+        public void SetVertices(List<Vertex> vertices)
+        {
+            this.vertices = vertices;
+        }
+
+        public List<Vertex> GetVertices()
+        {
+            return vertices;
+        }
+
+        public void SetEdges(List<Edge> edges)
+        {
+            this.edges = edges;
+        }
+
         public DirectBitmap Draw()
         {
+
+            dBmp = new DirectBitmap(w, h);
 
             mX = dBmp.width / 2;
             mY = dBmp.height / 2;
@@ -84,9 +106,11 @@ namespace Render3D
 
             //Console.WriteLine("cam: {0},{1},{2}", cam.x, cam.y, cam.z);
 
-            int x = v.x - cam.x;
-            int y = v.y - cam.y;
-            int z = v.z - cam.z;
+            int scale = 10;
+
+            int x = (int)(v.x * scale) - cam.x;
+            int y = (int)(v.y * scale) - cam.y;
+            int z = (int)(v.z * scale) - cam.z;
 
             //int adjZ = z + 5; //shift z forward
 
@@ -116,6 +140,8 @@ namespace Render3D
         {
             this.cam = c;
         }
+
+        public Camera GetCamera() { return cam; }
 
     }
 }
