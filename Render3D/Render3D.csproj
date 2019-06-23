@@ -54,6 +54,9 @@
     <Compile Include="RenderWindow.cs" />
     <Compile Include="Vertex.cs" />
     <Compile Include="Vertex2D.cs" />
+    <Compile Include="Viewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

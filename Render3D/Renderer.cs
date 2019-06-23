@@ -60,7 +60,8 @@ namespace Render3D
                 Vertex2D rCoords = GetRenderCoordinates(v);
 
                 //dBmp.SetPixel(cX + (int)x, cY + (int)y, c);
-                dBmp.SetPixel(rCoords.x, rCoords.y, c);
+                if(SafeCoord(rCoords.x, rCoords.y))
+                    dBmp.SetPixel(rCoords.x, rCoords.y, c);
 
             }
 
@@ -104,9 +105,12 @@ namespace Render3D
             {
                 int x = (int)(v1.x + (v2.x - v1.x)*t);
                 int y = (int)(v1.y + (v2.y - v1.y)*t);
-                dBmp.SetPixel(x, y, v1.c);
+                if(SafeCoord(x, y))
+                    dBmp.SetPixel(x, y, v1.c);
             }
         }
+
+        bool SafeCoord(int x, int y) { return (x > 0 && y > 0 && x < dBmp.width && y < dBmp.height); }
 
         public void SetCamera(Camera c)
         {
