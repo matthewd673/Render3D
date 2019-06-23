@@ -9,10 +9,20 @@ namespace Render3D
 
         DirectBitmap dBmp;
         List<Vertex> vertices = new List<Vertex>();
+        List<Edge> edges = new List<Edge>();
 
-        public Renderer(int width, int height)
+        private int mX;
+        private int mY;
+
+        RenderWindow parent;
+
+        Camera cam;
+
+        public Renderer(int width, int height, RenderWindow parent)
         {
             dBmp = new DirectBitmap(width, height);
+            this.parent = parent;
+            cam = parent.c;
         }
 
         public void NewVertex(int x, int y, int z, Color c = new Color())
@@ -20,10 +30,87 @@ namespace Render3D
             vertices.Add(new Vertex(x, y, z, c));
         }
 
+        public void NewEdge(int vId1, int vId2)
+        {
+            edges.Add(new Edge(vertices[vId1], vertices[vId2]));
+        }
+
         public DirectBitmap Draw()
         {
-            //set pixels on dBmp
+
+            mX = dBmp.width / 2;
+            mY = dBmp.height / 2;
+
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                Vertex v = vertices[i];
+
+                float x = v.x;
+                float y = v.y;
+                float z = v.z;
+                Color c = v.c;
+
+                z += 5; //shift towards camera;
+
+                float depth = (dBmp.width / 2) / z;
+
+                x *= depth;
+                y *= depth;
+
+                Vertex2D rCoords = GetRenderCoordinates(v);
+
+                //dBmp.SetPixel(cX + (int)x, cY + (int)y, c);
+                dBmp.SetPixel(rCoords.x, rCoords.y, c);
+
+            }
+
+            for (int i = 0; i < edges.Count; i++)
+            {
+                Edge e = edges[i];
+
+                Vertex2D rC1 = GetRenderCoordinates(e.v1);
+                Vertex2D rC2 = GetRenderCoordinates(e.v2);
+
+                DrawLine(rC1, rC2);
+
+            }
+
             return dBmp;
+        }
+
+        Vertex2D GetRenderCoordinates(Vertex v)
+        {
+
+            //Console.WriteLine("cam: {0},{1},{2}", cam.x, cam.y, cam.z);
+
+            int x = v.x - cam.x;
+            int y = v.y - cam.y;
+            int z = v.z - cam.z;
+
+            //int adjZ = z + 5; //shift z forward
+
+            //to get around dividing by 0 below (kinda temporary)
+            if (z == 0)
+                z = 1;
+
+            float depth = (mX / 2) / z; //cX is the halfway point, so we can use it as the width
+
+            return new Vertex2D((int)(x * depth) + mX, (int)(y * depth) + mY, v.c);
+        }
+
+        void DrawLine(Vertex2D v1, Vertex2D v2)
+        {
+            for(float t = 0f; t < 1f; t += .001f)
+            {
+                int x = (int)(v1.x + (v2.x - v1.x)*t);
+                int y = (int)(v1.y + (v2.y - v1.y)*t);
+                dBmp.SetPixel(x, y, v1.c);
+            }
+        }
+
+        public void SetCamera(Camera c)
+        {
+            this.cam = c;
         }
 
     }

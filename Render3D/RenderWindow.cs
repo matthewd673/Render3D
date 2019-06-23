@@ -8,9 +8,9 @@ namespace Render3D
     public class RenderWindow
     {
 
-        private Form window;
+        public Form window;
 
-        public bool open { get; private set; }
+        public Camera c;
 
         public RenderWindow(int width, int height)
         {
@@ -24,19 +24,49 @@ namespace Render3D
         //[STAThread]
         public void Display()
         {
-            window.FormClosed += Window_FormClosed;
+            //window.FormClosing += Window_FormClosing;
+            //window.KeyUp += Window_KeyDown;
+            window.Activate();
             window.Show();
-            open = true;
+            window.Enabled = true;
+            window.Focus();
+            window.Visible = true;
+
         }
 
-        private void Window_FormClosed(object sender, FormClosedEventArgs e)
+        private void Window_FormClosing(object sender, FormClosingEventArgs e)
         {
-            open = false;
+            e.Cancel = true;
+            window.Hide();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            int i = 1;
+
+            if (e.KeyCode == Keys.W)
+                c.z += i;
+            if (e.KeyCode == Keys.S)
+                c.z -= i;
+            if (e.KeyCode == Keys.A)
+                c.x -= i;
+            if (e.KeyCode == Keys.D)
+                c.x += i;
+            if (e.KeyCode == Keys.Q)
+                c.y -= i;
+            if (e.KeyCode == Keys.E)
+                c.y += i;
         }
 
         public void UpdateGraphics(DirectBitmap dBmp)
         {
             window.BackgroundImage = dBmp.bitmap;
+        }
+
+        public void SetCamera(Camera c)
+        {
+            this.c = c;
         }
 
     }
